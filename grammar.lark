@@ -1,27 +1,41 @@
-Expression: UnaryExpr | Expression binary_op Expression .
-UnaryExpr: PrimaryExpr | unary_op UnaryExpr .
+?statement: "if" condition statement -> if
+   | "if" condition statement "else" statement -> ifelse
+   | "while" condition statement -> while
+   | "do" statement "while" condition ";" -> dowhile
+   | "{" statement* "}"
+   | expression
+   | relation
+   | id ":=" expression -> var_assignment
+   | ";"
+condition: "(" (expression | relation) ")"
 
-binary_op: "||" | "&&" | rel_op | add_op | mul_op .
-rel_op: "==" | "!=" | "<" | "<=" | ">" | ">=" .
-add_op: "+" | "-" | "^" .
-mul_op: "*" | "/" | "%" .
+relation: expression "<" expression -> lesser
+   | expression ">" expression -> greater
+   
+expression: term
+   | expression "+" expression -> sum
+   | expression "-" expression -> subtract
 
-unary_op: "+" | "-" | "!" | "^" | "*" .
+term: factor 
+| factor "*" factor
+| factor "/" factor
+   
+factor: id
+   | number
+   | condition
+   
+id: CNAME
 
-PrimaryExpr:
-	Operand |
-	PrimaryExpr Selector |
-	PrimaryExpr Index .
-
-Selector: "." identifier .
-Index: "[" Expression "]" .
+data_type: "int" | "string"
 
 
-ArrayType:  "[" ArrayLength "]"
-ArrayLength: Expression .
+number: DEC_NUMBER | HEX_NUMBER | BIN_NUMBER | OCT_NUMBER | FLOAT_NUMBER
+string: STRING | LONG_STRING
 
-%import common.CNAME -> NAME
-%import common.NUMBER
-%import common.WS_INLINE
+// Import terminals from standard library
+%import python (NAME, COMMENT, STRING, LONG_STRING)
+%import python (DEC_NUMBER, HEX_NUMBER, OCT_NUMBER, BIN_NUMBER, FLOAT_NUMBER)
+%import common.CNAME
 
-%ignore WS_INLINE
+%import common.WS
+%ignore WS
