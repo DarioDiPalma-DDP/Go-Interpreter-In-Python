@@ -1,41 +1,37 @@
-?statement: "if" condition statement -> if
-   | "if" condition statement "else" statement -> ifelse
-   | "while" condition statement -> while
-   | "do" statement "while" condition ";" -> dowhile
-   | "{" statement* "}"
+?statement: "if" condition block_statement -> conditional
+   | "if" condition block_statement "else" block_statement -> if_else
+   | "if" condition block_statement "else if" condition block_statement -> if_elseif
+   | "if" condition block_statement "else if" condition block_statement "else" block_statement -> if_elseif_else
+   | "for" condition block_statement -> loop
    | expression
    | relation
-   | id ":=" expression -> var_assignment
-   | ";"
-condition: "(" (expression | relation) ")"
+   | "print" expression
+   | IDENTIFIER ":=" expression -> assignment
 
-relation: expression "<" expression -> lesser
-   | expression ">" expression -> greater
-   
+block_statement: "{" statement* "}"
+
+condition: "(" relation ")"
+
+relation: expression "<" expression -> less
+   | expression ">" expression -> great
+
 expression: term
-   | expression "+" expression -> sum
-   | expression "-" expression -> subtract
+   | expression "+" expression -> addition
+   | expression "-" expression -> subtraction
 
 term: factor 
-| factor "*" factor
-| factor "/" factor
-   
-factor: id
-   | number
+| factor "*" factor -> multiplication
+| factor "/" factor -> division
+
+factor: IDENTIFIER
+   | NUMBER
    | condition
    
-id: CNAME
+data_type: "int" | "string" | "bool"
 
-data_type: "int" | "string"
-
-
-number: DEC_NUMBER | HEX_NUMBER | BIN_NUMBER | OCT_NUMBER | FLOAT_NUMBER
-string: STRING | LONG_STRING
-
-// Import terminals from standard library
-%import python (NAME, COMMENT, STRING, LONG_STRING)
-%import python (DEC_NUMBER, HEX_NUMBER, OCT_NUMBER, BIN_NUMBER, FLOAT_NUMBER)
-%import common.CNAME
-
+// Import terminals from common library
+%import common.CNAME -> IDENTIFIER
+%import common.NUMBER
 %import common.WS
+
 %ignore WS

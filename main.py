@@ -1,40 +1,30 @@
-from lark import Lark, Transformer
+from lark import Lark
 
-class MyTransformer(Transformer):
-    def number(self, tok):
-        return float(tok[0].value)
-    def list(self, items):
-        return list(items)
-    def factor(self, items):
-        return items[0]
-    def term(self, items):
-        return items[0]
-    def expression(self, items):
-        return items[0]
-    def sum(self, items):
-        return items[0]+items[1]
-    def pair(self, key_value):
-        k, v = key_value
-        return k, v
-    def dict(self, items):
-        return dict(items)
+import transformer
+import interpreter
 
-calc_parser = Lark.open("grammar.lark", parser='lalr', start='statement')
-calc = calc_parser.parse
-
+parser = Lark.open("grammar.lark", parser="lalr", start="statement")
 
 def main():
     while True:
         try:
-            s = input('> ')
+            s = input(">> ")
         except EOFError:
             break
-        tree = calc(s)
+        tree = parser.parse(s)
         print("Parse Tree:")
         print(tree.pretty())
-        print("Evaluation:")
-        print(MyTransformer().transform(tree))
+        trans = transformer.TreeTransformer().transform(tree)
+        if trans is not None:
+            print("Transformation: " + str(trans))
+
+        try:
+            eval = interpreter.GoInterpreter().visit(trans)
+            if eval is not None:
+                print("Transformation: " + str(eval))
+        except AttributeError:
+            pass
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
