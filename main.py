@@ -17,6 +17,7 @@ def main():
         print("DEBUG: Parse Tree:")
         print(tree.pretty())
         try:
+            #tree = transformer.TreeTransformer().transform(tree) # Transform tree before Interpretate it
             eval = interpreter.GoInterpreter().visit(tree)
             if eval is not None:
                 print(str(eval))

@@ -4,6 +4,10 @@ from symbol_table import st, SymbolNotExistentException
 
 class TreeTransformer(Transformer):
 
+    # Var declaration
+    def declarations(self, items):
+        print("Funziono?")
+
     # Variable assignment
     def assignment(self, items):
         st.set(items[0].value, items[1])

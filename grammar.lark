@@ -1,36 +1,46 @@
 ?statement: "if" condition block_statement -> conditional
-   | "if" condition block_statement "else" block_statement -> if_else
-   | "if" condition block_statement "else if" condition block_statement -> if_elseif
-   | "if" condition block_statement "else if" condition block_statement "else" block_statement -> if_elseif_else
-   | "for" relation block_statement -> loop
-   | IDENTIFIER "(" expression ")" -> call
-   | expression
-   | relation
-   | IDENTIFIER ":=" expression -> assignment
+          | "if" condition block_statement "else" block_statement -> if_else
+          | "if" condition block_statement "else if" condition block_statement -> if_elseif
+          | "if" condition block_statement "else if" condition block_statement "else" block_statement -> if_elseif_else
+          | "for" relation block_statement -> loop
+          | IDENTIFIER "(" expression ")" -> call
+          | expression
+          | relation
+          | declaration 
 
 block_statement: "{" statement* "}"
 
 condition: "(" relation ")"
 
 relation: expression "<" expression -> less
-   | expression ">" expression -> great
+        | expression ">" expression -> great
 
 expression: term
-   | expression "+" expression -> addition
-   | expression "-" expression -> subtraction
+          | expression "+" expression -> addition
+          | expression "-" expression -> subtraction
 
 term: factor 
-| factor "*" factor -> multiplication
-| factor "/" factor -> division
+    | factor "*" factor -> multiplication
+    | factor "/" factor -> division
 
 factor: IDENTIFIER
-   | NUMBER
-   | condition
-   | STRING
+      | NUMBER
+      | condition
+      | STRING
    
-data_type: "int" | "string" | "bool"
-
 STRING : /".*?(?<!\\)"/
+
+//DATA_TYPE: "int" | "string" | "bool"
+
+// Variable declarations
+declaration: var_declare
+           | short_declare
+// var i int || var u,v,w int || var x = 0 || var b,c int = 1,3
+var_declare: "var" ident_list (IDENTIFIER)? ("=" expression_list (";")?)? -> assignment
+ident_list: IDENTIFIER ("," IDENTIFIER)*
+expression_list: expression ("," expression)*
+// x := 2
+short_declare: ident_list ":=" expression_list -> assignment
 
 // Import terminals from common library
 %import common.CNAME -> IDENTIFIER
