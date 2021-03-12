@@ -8,20 +8,18 @@ parser = Lark.open("grammar.lark", parser="lalr", start="statement")
 def main():
     while True:
         try:
-            s = input(">> ")
+            s = input(">>> ")
+            if s == "":
+                continue
         except EOFError:
             break
         tree = parser.parse(s)
-        print("Parse Tree:")
+        print("DEBUG: Parse Tree:")
         print(tree.pretty())
-        trans = transformer.TreeTransformer().transform(tree)
-        if trans is not None:
-            print("Transformation: " + str(trans))
-
         try:
-            eval = interpreter.GoInterpreter().visit(trans)
+            eval = interpreter.GoInterpreter().visit(tree)
             if eval is not None:
-                print("Transformation: " + str(eval))
+                print(str(eval))
         except AttributeError:
             pass
 

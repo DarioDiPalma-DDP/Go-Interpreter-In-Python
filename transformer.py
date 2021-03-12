@@ -4,6 +4,10 @@ from symbol_table import st, SymbolNotExistentException
 
 class TreeTransformer(Transformer):
 
+    # Variable assignment
+    def assignment(self, items):
+        st.set(items[0].value, items[1])
+
     # Relational operators
     def less(self, items):
         return items[0] < items[1]
@@ -11,16 +15,17 @@ class TreeTransformer(Transformer):
     def great(self, items):
         return items[0] > items[1]
 
-    # Basic operands translation
+    # Operands translation
     def factor(self, items):
         if items[0].type == 'NUMBER':
-            return float(items[0].value)
+            return int(items[0].value)
         elif items[0].type == 'IDENTIFIER':
             try:
                 return st.get(items[0].value)
             except SymbolNotExistentException:
                 print("ERROR: Variable " + items[0].value + " does not exist.")
-
+        elif items[0].type == 'STRING':
+            return str(items[0].value.strip('"'))
     
     def term(self, items):
         return items[0]
