@@ -3,8 +3,10 @@ from lark.visitors import Interpreter
 import transformer
 from symbol_table import st
 
-# Visit each node of the tree, and run appropriate methods
+# Visit each node of the tree, and run appropriate methods : Bottom-Up
 trans = transformer.TreeTransformer()
+
+# Interpreter visit each sub-tree of in Top-Down
 class GoInterpreter(Interpreter):
     def conditional(self, tree):
         conds = tree.find_data('condition')
@@ -22,8 +24,11 @@ class GoInterpreter(Interpreter):
     def assignment(self, tree):
         return trans.transform(tree)
 
-    #def expression(self, tree):
-    #    return trans.transform(tree)
+    def short_assignment(self, tree):
+        return trans.transform(tree)
+
+    def expression(self, tree):
+        return trans.transform(tree)
 
     def print_stmt(self, tree):
         return trans.transform(tree)

@@ -27,20 +27,21 @@ factor: IDENTIFIER
       | NUMBER
       | condition
       | STRING
-   
-STRING : /".*?(?<!\\)"/
 
-//DATA_TYPE: "int" | "string" | "bool"
+// String type like "ciao"
+STRING : /".*?(?<!\\)"/
 
 // Variable declarations
 declaration: var_declare
            | short_declare
-// var i int || var u,v,w int || var x = 0 || var b,c int = 1,3
-var_declare: "var" ident_list (IDENTIFIER)? ("=" expression_list (";")?)? -> assignment
+// Supported type
+DATA_TYPE: "int" | "string" | "bool"
+// var x = 0 || var b,c int = 1,3
+var_declare: "var" ident_list (DATA_TYPE ("=" expression_list)? | "=" expression_list) -> assignment
 ident_list: IDENTIFIER ("," IDENTIFIER)*
 expression_list: expression ("," expression)*
 // x := 2
-short_declare: ident_list ":=" expression_list -> assignment
+short_declare: ident_list ":=" expression_list -> short_assignment
 
 // Import terminals from common library
 %import common.CNAME -> IDENTIFIER
