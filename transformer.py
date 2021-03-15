@@ -2,7 +2,7 @@ from lark import Transformer
 
 from symbol_table import st, SymbolNotExistentException
 
-def isDataType(items):
+def check_data_type(items):
     try:
         types = str(items[1].value)
         if (types == "int" or types == "string" or types == "bool"):
@@ -18,7 +18,7 @@ def isDataType(items):
         return False
 
     
-def TypeCheck(items):
+def type_check(items):
     return 0
 
 class TreeTransformer(Transformer):
@@ -30,7 +30,7 @@ class TreeTransformer(Transformer):
     # Variable assignment
     def assignment(self, items):
         ident = items[0]
-        if (isDataType(items)): #there is Type specification
+        if (check_data_type(items)): # there is type specification
             if len(ident.children) == 1: # var x int = 2
                 st.set(ident.children[0], items[2])
             else:   # var x,y int = 2,3 || var x,y,z int = 1

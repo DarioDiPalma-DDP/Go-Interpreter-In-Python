@@ -2,7 +2,8 @@
           | "if" condition block_statement "else" block_statement -> if_else
           | "if" condition block_statement "else if" condition block_statement -> if_elseif
           | "if" condition block_statement "else if" condition block_statement "else" block_statement -> if_elseif_else
-          | "for" relation block_statement -> loop
+          | "for" relation block_statement -> while_loop
+          | "for" short_declare ";" relation ";" IDENTIFIER "++" block_statement -> for_loop
           | IDENTIFIER "(" expression ")" -> call
           | expression
           | relation
@@ -28,7 +29,7 @@ factor: IDENTIFIER
       | condition
       | STRING
 
-// String type like "ciao"
+// String type, enclosed by double quotes (ex. "ciao")
 STRING : /".*?(?<!\\)"/
 
 // Variable declarations
