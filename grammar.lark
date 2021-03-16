@@ -1,77 +1,62 @@
 ?statement: declaration
-          | expression
-          | if_stmnt
-          //| "for" relation block_statement -> while_loop
-          //| "for" short_declare ";" relation ";" IDENTIFIER "++" block_statement -> for_loop
-          //| IDENTIFIER "(" expression ")" -> call
-          //| relation
-
+          | bool_logic
+          | if_stmt
+          | for_stmnt
+          | IDENTIFIER "(" expression ")" -> call
 
 block_statement: "{" statement* "}"
 
-//condition: "(" relation ")"
+?bool_logic: relation
+          | "(" bool_logic ")"
+          | bool_logic "&&" bool_logic -> bool_and
+          | bool_logic "||" bool_logic -> bool_or
+          | "!" bool_logic -> bool_not
 
-bool_logic: relation (("&&"|"||") relation)?
-          | "!"expression
-
-relation: expression "<" expression -> less
+?relation: "(" relation ")"
+        | expression "<" expression -> less
         | expression ">" expression -> great
-        | expression ">=" expression
-        | expression "<=" expression
-        | expression "==" expression
-        | expression "!=" expression
+        | expression ">=" expression -> great_eq
+        | expression "<=" expression -> less_eq
+        | expression "==" expression -> equal
+        | expression "!=" expression -> not_equal
 
 expression: term
           | expression "+" expression -> addition
           | expression "-" expression -> subtraction
 
-term: factor 
+term: factor
     | factor "*" factor -> multiplication
     | factor "/" factor -> division
 
-factor: 
-      | NUMBER
+factor: NUMBER
       | IDENTIFIER
       | STRING
-      //| bool_logic //condition
-
-
-//expression: unary_expr | expression binary_op expression
-//unary_expr: primary_expr | unary_op unary_expr
-//binary_op: "||" | "&&" | rel_op | add_op | mul_op
-//rel_op: "==" | "!=" | "<" | "<=" | ">" | ">="
-//add_op: "+" | "-"
-//mul_op: "*" | "/"
-//unary_op: "+" | "-" | "!" | "*"
-//inc_dec_stmnt: expression("++"|"--")
-
-//primary_expr: operand
-
-//operand: literal | operand_name | "(" expression ")"
-//literal: basic_lit //| composite_lit
-//basic_lit: NUMBER | STRING
-//operand_name: IDENTIFIER
-
-//composite_lit: array_type
-
 
 // Variable declarations
 declaration: var_declare
            | short_declare
+
 // Supported type
 DATA_TYPE: "int" | "string" | "bool"
+
 // var x = 0 || var b,c int = 1,3
 var_declare: "var" ident_list (DATA_TYPE ("=" expression_list)? | "=" expression_list) -> assignment
 ident_list: IDENTIFIER ("," IDENTIFIER)*
 expression_list: expression ("," expression)*
+
 // x := 2
 short_declare: ident_list ":=" expression_list -> short_assignment
 
 // If Statement
-if_stmnt: "if" (expression";")? expression block_statement ("else" (if_stmnt|block_statement))? 
+if_stmt: "if" bool_logic block_statement ("else" (if_stmt|block_statement))?
+
+// For Statement
+for_stmnt: "for" bool_logic block_statement -> while_loop
+         | "for" short_declare ";" bool_logic ";" IDENTIFIER "++" block_statement -> for_loop
 
 // String type, enclosed by double quotes (ex. "ciao")
 STRING : /".*?(?<!\\)"/
+
 // Import terminals from common library
 %import common.CNAME -> IDENTIFIER
 %import common.NUMBER

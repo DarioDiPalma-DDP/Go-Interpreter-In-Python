@@ -6,17 +6,20 @@ from symbol_table import st
 # Transfomer visits a sub-tree bottom-up and run appropriate methods
 trans = transformer.TreeTransformer()
 
+st.set("true", True)
+st.set("false", False)
+
 # Interpreter is used to visit the root tree top-down
 class GoInterpreter(Interpreter):
-    def conditional(self, tree):
-        conds = tree.find_data('condition')
-        for cond in conds:
-            trans_tree = trans.transform(cond)
-            print("DEBUG: Transformed condition")
-            print(trans_tree)
-            if trans_tree.children[0]:
-                print("DEBUG: Condition is True")
-                self.visit_children(tree)
+    def if_stmt(self, tree):
+        trans_tree = trans.transform(tree.children[0])
+        if trans_tree:
+            print(self.visit_children(tree.children[1])[0])
+        elif tree.children[2].data == "block_statement":
+            print(self.visit_children(tree.children[2])[0])
+        elif tree.children[2].data == "if_stmt":
+            self.visit(tree.children[2])
+
 
     def while_loop(self, tree):
         print("DEBUG: Relation tree")
@@ -38,28 +41,33 @@ class GoInterpreter(Interpreter):
         rel = tree.children[1]
         ident = tree.children[2]
         while trans.transform(rel):
-            trans_tree = trans.transform(rel)
-            print("DEBUG: Transformed relation")
-            print(trans_tree)
+            #trans_tree = trans.transform(rel)
+            #print("DEBUG: Transformed relation")
+            #print(trans_tree)
             blocks = tree.find_data('block_statement')
             for block in blocks:
-                print(block)
-                self.visit_children(block)
+                #print(block)
+                print(self.visit_children(block)[0])
 
             cur_value = st.get(ident)
             st.set(ident, cur_value+1)
 
+    def bool_logic(self, tree):
+        return trans.transform(tree)
+
+    def bool_and(self, tree):
+        return trans.transform(tree)
+
+    def bool_or(self, tree):
+        return trans.transform(tree)
+
+    def bool_not(self, tree):
+        return trans.transform(tree)
 
     def block_statement(self, tree):
-        return trans.transform(tree)
+        self.visit_children(tree)
 
     def declaration(self, tree):
-        return trans.transform(tree)
-    
-    def assignment(self, tree):
-        return trans.transform(tree)
-
-    def short_assignment(self, tree):
         return trans.transform(tree)
 
     def expression(self, tree):

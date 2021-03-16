@@ -23,10 +23,6 @@ def type_check(items):
 
 class TreeTransformer(Transformer):
 
-    # Var declaration
-    def declarations(self, items):
-        print("Funziono?")
-
     # Variable assignment
     def assignment(self, items):
         ident = items[0]
@@ -72,6 +68,18 @@ class TreeTransformer(Transformer):
     def great(self, items):
         return items[0] > items[1]
 
+    def great_eq(self, items):
+        return items[0] >= items[1]
+
+    def less_eq(self, items):
+        return items[0] <= items[1]
+
+    def equal(self, items):
+        return items[0] == items[1]
+
+    def not_equal(self, items):
+        return items[0] != items[1]
+
     # Operands translation
     def factor(self, items):
         if items[0].type == 'NUMBER':
@@ -103,10 +111,15 @@ class TreeTransformer(Transformer):
     def division(self, items):
         return items[0] / items[1]
 
-    # x,y,z
-    #def ident_list(self, items):
-    #    print(items[0])
-    #    i = 0
-    #    for item in items:
-    #        items
-    #        return item
+    # Boolean logic
+    def bool_and(self, items):
+        return items[0] and items[1]
+
+    def bool_or(self, items):
+        return items[0] or items[1]
+
+    def bool_not(self, items):
+        return not items[0]
+
+    def bool_logic(self, items):
+        return items[0]
