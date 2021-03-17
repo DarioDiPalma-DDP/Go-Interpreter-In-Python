@@ -61,6 +61,14 @@ class TreeTransformer(Transformer):
                 for i in range(len(ident.children)):
                     st.set(ident.children[i], items[1].children[i])
 
+
+    def array_assignment(self, items):
+        elements = items[2].children
+        # TODO: Check data type of elements
+        print("DEBUG: Array elements:")
+        print(elements)
+        st.set(items[0], elements)
+
     # Relational operators
     def less(self, items):
         return items[0] < items[1]
@@ -91,6 +99,10 @@ class TreeTransformer(Transformer):
                 print("ERROR: Variable " + items[0].value + " does not exist.")
         elif items[0].type == 'STRING':
             return str(items[0].value.strip('"'))
+
+    def index(self, items):
+        array = st.get(items[0].value)
+        return array[items[1]]
     
     def term(self, items):
         return items[0]

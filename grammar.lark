@@ -31,6 +31,7 @@ term: factor
 factor: NUMBER
       | IDENTIFIER
       | STRING
+      | IDENTIFIER "[" expression "]" -> index
 
 // Variable declarations
 declaration: var_declare
@@ -44,8 +45,11 @@ var_declare: "var" ident_list (DATA_TYPE ("=" expression_list)? | "=" expression
 ident_list: IDENTIFIER ("," IDENTIFIER)*
 expression_list: expression ("," expression)*
 
+array_type: "[" NUMBER "]" DATA_TYPE
+
 // x := 2
 short_declare: ident_list ":=" expression_list -> short_assignment
+             | IDENTIFIER ":=" array_type "{" expression_list "}" -> array_assignment
 
 // If Statement
 if_stmt: "if" bool_logic block_statement ("else" (if_stmt|block_statement))?
