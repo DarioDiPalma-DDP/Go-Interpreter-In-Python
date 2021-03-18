@@ -65,9 +65,7 @@ class TreeTransformer(Transformer):
     def array_assignment(self, items):
         elements = items[2].children
         # TODO: Check data type of elements
-        print("DEBUG: Array elements:")
-        print(elements)
-        st.set(items[0], elements)
+        st.set(items[0].children[0], elements)
 
     # Relational operators
     def less(self, items):

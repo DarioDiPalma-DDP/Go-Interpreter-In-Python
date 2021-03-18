@@ -1,3 +1,5 @@
+?program: statement+
+
 ?statement: declaration
           | bool_logic
           | if_stmt
@@ -33,30 +35,24 @@ factor: NUMBER
       | STRING
       | IDENTIFIER "[" expression "]" -> index
 
-// Variable declarations
-declaration: var_declare
-           | short_declare
+// Variable declarations and assignment
+?declaration: "var" ident_list (DATA_TYPE ("=" expression_list)? | "=" expression_list) -> assignment
+           | ident_list ":=" expression_list -> short_assignment
+           | ident_list ":=" array_type "{" expression_list "}" -> array_assignment
 
-// Supported type
+// Data types
 DATA_TYPE: "int" | "string" | "bool"
 
-// var x = 0 || var b,c int = 1,3
-var_declare: "var" ident_list (DATA_TYPE ("=" expression_list)? | "=" expression_list) -> assignment
 ident_list: IDENTIFIER ("," IDENTIFIER)*
 expression_list: expression ("," expression)*
-
 array_type: "[" NUMBER "]" DATA_TYPE
-
-// x := 2
-short_declare: ident_list ":=" expression_list -> short_assignment
-             | IDENTIFIER ":=" array_type "{" expression_list "}" -> array_assignment
 
 // If Statement
 if_stmt: "if" bool_logic block_statement ("else" (if_stmt|block_statement))?
 
 // For Statement
 for_stmnt: "for" bool_logic block_statement -> while_loop
-         | "for" short_declare ";" bool_logic ";" IDENTIFIER "++" block_statement -> for_loop
+         | "for" declaration ";" bool_logic ";" IDENTIFIER "++" block_statement -> for_loop
 
 // String type, enclosed by double quotes (ex. "ciao")
 STRING : /".*?(?<!\\)"/
