@@ -2,24 +2,7 @@ from lark import Transformer
 
 from symbol_table import st, SymbolNotExistentException
 
-def check_data_type(items):
-    try:
-        types = str(items[1].value)
-        if (types == "int" or types == "string" or types == "bool"):
-            """ TO-DO Gestire i tipi
-            for i in range(len(items[2].children)):
-                if not(isinstance(items[2].children[i],int) or isinstance(items[2].children[i],bool)):
-                    print("Error not Int or Bool")
-            """
-            return True
-        else: 
-            return False
-    except AttributeError:
-        return False
-
-    
-def type_check(items):
-    return 0
+from error_handle import check_data_type, OutOfLenght, type_check, TypeDifferentError
 
 class TreeTransformer(Transformer):
 
@@ -37,7 +20,7 @@ class TreeTransformer(Transformer):
                     for i in range(len(ident.children)):
                         st.set(ident.children[i], items[2].children[i])
 
-        else: # No type specification
+        elif(len(items)==2): # No type specification
             if len(ident.children) == 1: # var x = 2
                 st.set(ident.children[0], items[1])
             else:   # var x,y = 2,3 || var x,y,z = 1
@@ -47,6 +30,8 @@ class TreeTransformer(Transformer):
                 else:
                     for i in range(len(ident.children)):
                         st.set(ident.children[i], items[1].children[i])
+        else:
+            print("There was an Error in your declaration")
 
     # x := 2
     def short_assignment(self, items):
@@ -63,9 +48,23 @@ class TreeTransformer(Transformer):
 
 
     def array_assignment(self, items):
-        elements = items[2].children
-        # TODO: Check data type of elements
-        st.set(items[0].children[0], elements)
+        try:
+            length = items[1].children[0].value
+            array_type = items[1].children[1].value
+            elements = items[2].children
+            if int(length) != len(elements):
+                raise OutOfLenght
+            elif array_type == "int":
+                type_check(elements,int)
+            elif array_type == "string":
+                type_check(elements,str)
+            #elif array_type == "bool":
+            #    type_check(elements,bool)
+            st.set(items[0].children[0], elements)
+        except OutOfLenght:
+            print("Lenght of array don't coincide with the number of elements")
+        except TypeDifferentError:
+            print("The elements you enter doesn't is conform with the type specificed")
 
     # Relational operators
     def less(self, items):
