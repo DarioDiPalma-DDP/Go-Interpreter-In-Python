@@ -6,10 +6,6 @@ from symbol_table import st
 # Transfomer visits a sub-tree bottom-up and run appropriate methods
 trans = transformer.TreeTransformer()
 
-# Language costants definition
-st.set("true", True)
-st.set("false", False)
-
 # Interpreter is used to visit the root tree top-down
 class GoInterpreter(Interpreter):
     def program(self, tree):

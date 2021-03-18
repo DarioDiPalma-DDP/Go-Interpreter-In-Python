@@ -17,12 +17,21 @@ def check_data_type(items):
         elif types == "string":
             type_check(items[2].children,str)
             return True
+        elif types == "bool":
+            type_check(items[2].children,bool)
+            return True
     except TypeDifferentError:
         print("The elements you enter doesn't is conform with the type specificed")
         return False
 
     
 def type_check(elements,type_to_check):
-    for x in range(len(elements)):
+    if(type_to_check != bool):
+        for x in range(len(elements)):
                     if not isinstance(elements[x],type_to_check):
                         raise TypeDifferentError
+    else:
+        for x in range(len(elements)):
+                    if not isinstance(bool(elements[x]),bool):
+                        raise TypeDifferentError
+    

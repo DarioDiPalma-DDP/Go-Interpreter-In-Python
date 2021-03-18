@@ -9,7 +9,7 @@ class TreeTransformer(Transformer):
     # Variable assignment
     def assignment(self, items):
         ident = items[0]
-        if (check_data_type(items)): # there is type specification
+        if (len(items)==3 and check_data_type(items)): # there is type specification
             if len(ident.children) == 1: # var x int = 2
                 st.set(ident.children[0], items[2])
             else:   # var x,y int = 2,3 || var x,y,z int = 1
@@ -58,8 +58,8 @@ class TreeTransformer(Transformer):
                 type_check(elements,int)
             elif array_type == "string":
                 type_check(elements,str)
-            #elif array_type == "bool":
-            #    type_check(elements,bool)
+            elif array_type == "bool":
+                type_check(elements,bool)
             st.set(items[0].children[0], elements)
         except OutOfLenght:
             print("Lenght of array don't coincide with the number of elements")
@@ -90,6 +90,8 @@ class TreeTransformer(Transformer):
         if items[0].type == 'NUMBER':
             return int(items[0].value)
         elif items[0].type == 'IDENTIFIER':
+            if (items[0].value == "true" or items[0].value == "false"):
+                return items[0].value
             try:
                 return st.get(items[0].value)
             except SymbolNotExistentException:
