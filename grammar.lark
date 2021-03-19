@@ -4,7 +4,7 @@
           | bool_logic
           | if_stmt
           | for_stmnt
-          | IDENTIFIER "(" expression ")" -> call
+          | "Printf" "(" (expression | bool_logic) ")" -> printf
 
 block_statement: "{" statement* "}"
 
@@ -22,18 +22,29 @@ block_statement: "{" statement* "}"
         | expression "==" expression -> equal
         | expression "!=" expression -> not_equal
 
-expression: term
-          | expression "+" expression -> addition
-          | expression "-" expression -> subtraction
 
-term: factor
-    | factor "*" factor -> multiplication
-    | factor "/" factor -> division
+addition: expression "+" expression
+subtraction: expression "-" expression
+multiplication: term "*" term
+division: term "/" term
+
+expression: "(" expression ")"
+          | term
+          | addition
+          | subtraction
+
+term: "(" term ")"
+    | factor
+    | "(" addition ")"
+    | "(" subtraction ")"
+    | multiplication
+    | division
 
 factor: NUMBER
       | IDENTIFIER
       | STRING
       | IDENTIFIER "[" expression "]" -> index
+      | "Scanf" "(" expression ")" -> scanf
 
 // Variable declarations and assignment
 ?declaration: "var" ident_list (DATA_TYPE ("=" expression_list)? | "=" expression_list) -> assignment

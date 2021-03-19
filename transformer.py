@@ -95,7 +95,7 @@ class TreeTransformer(Transformer):
             try:
                 return st.get(items[0].value)
             except SymbolNotExistentException:
-                print("ERROR: Variable " + items[0].value + " does not exist.")
+                    print("ERROR: Variable " + items[0].value + " does not exist.")
         elif items[0].type == 'STRING':
             return str(items[0].value.strip('"'))
 
@@ -134,3 +134,7 @@ class TreeTransformer(Transformer):
 
     def bool_logic(self, items):
         return items[0]
+
+    # Keyboard input
+    def scanf(self, items):
+        return input(items[0])

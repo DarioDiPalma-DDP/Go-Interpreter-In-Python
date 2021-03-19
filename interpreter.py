@@ -80,6 +80,5 @@ class GoInterpreter(Interpreter):
     def expression(self, tree):
         return trans.transform(tree)
     
-    def call(self, tree):
-        if tree.children[0].value == 'print':
-            return trans.transform(tree.children[1])
+    def printf(self, tree):
+        return trans.transform(tree.children[0])
