@@ -23,17 +23,18 @@ class GoInterpreter(Interpreter):
 
 
     def while_loop(self, tree):
-        print("DEBUG: Relation tree")
         rel = tree.children[0]
-        print(rel)
-
+        evs = ""
         while trans.transform(rel):
-            trans_tree = trans.transform(rel)
-            print("DEBUG: Transformed relation")
-            print(trans_tree)
+            #trans_tree = trans.transform(rel)
             blocks = tree.find_data('block_statement')
             for block in blocks:
-                self.visit_children(block)
+                evl = self.visit_children(block)
+                for ev in evl:
+                    if ev is not None:
+                        evs = evs + "\n" + str(ev)
+        return evs
+
 
     def for_loop(self, tree):
         assign = tree.children[0]
@@ -41,17 +42,20 @@ class GoInterpreter(Interpreter):
 
         rel = tree.children[1]
         ident = tree.children[2]
+        evs = ""
         while trans.transform(rel):
             #trans_tree = trans.transform(rel)
             #print("DEBUG: Transformed relation")
             #print(trans_tree)
             blocks = tree.find_data('block_statement')
             for block in blocks:
-                #print(block)
-                print(self.visit_children(block)[0])
-
+                evl = self.visit_children(block)
+                for ev in evl:
+                    if ev is not None:
+                        evs = evs + "\n" + str(ev)
             cur_value = st.get(ident)
             st.set(ident, cur_value+1)
+        return evs
 
     def bool_logic(self, tree):
         return trans.transform(tree)

@@ -11,7 +11,7 @@ class TreeTransformer(Transformer):
         ident = items[0]
         if (len(items)==3 and check_data_type(items)): # there is type specification
             if len(ident.children) == 1: # var x int = 2
-                st.set(ident.children[0], items[2])
+                st.set(ident.children[0], items[2].children[0])
             else:   # var x,y int = 2,3 || var x,y,z int = 1
                 if len(items[2].children) == 1:
                     for i in range(len(ident.children)):
@@ -22,7 +22,7 @@ class TreeTransformer(Transformer):
 
         elif(len(items)==2): # No type specification
             if len(ident.children) == 1: # var x = 2
-                st.set(ident.children[0], items[1])
+                st.set(ident.children[0], items[1].children[0])
             else:   # var x,y = 2,3 || var x,y,z = 1
                 if len(items[1].children) == 1:
                     for i in range(len(ident.children)):

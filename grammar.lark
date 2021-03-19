@@ -28,7 +28,7 @@ subtraction: expression "-" expression
 multiplication: term "*" term
 division: term "/" term
 
-expression: "(" expression ")"
+?expression: "(" expression ")"
           | term
           | addition
           | subtraction

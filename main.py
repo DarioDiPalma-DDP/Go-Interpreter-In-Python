@@ -11,6 +11,7 @@ def main():
     # Initialize the argument parser
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument("--script", "-s", help="set script file location")
+    arg_parser.add_argument("--debug", "-d", help="enable debug mode", action='store_true')
 
     # Read arguments from the command line
     args = arg_parser.parse_args()
@@ -20,8 +21,9 @@ def main():
         with open(args.script) as f:
             read_data = f.read()
             tree = parser.parse(read_data)
-            print("DEBUG: Parse Tree:")
-            print(tree.pretty())
+            if args.debug:
+                print("DEBUG: Parse Tree:")
+                print(tree.pretty())
             try:
                 evals = interpreter.GoInterpreter().visit(tree)
                 for eval in evals:
@@ -29,11 +31,13 @@ def main():
                         print(str(eval))
             except AttributeError:
                 pass
+            except TypeError:
+                pass
     else:
-        start_repl()
+        start_repl(args.debug)
 
     
-def start_repl():
+def start_repl(debug_mode):
     while True:
         try:
             s = input(">>> ")
@@ -42,8 +46,9 @@ def start_repl():
         except EOFError:
             break
         tree = parser.parse(s)
-        print("DEBUG: Parse Tree:")
-        print(tree.pretty())
+        if debug_mode:
+            print("DEBUG: Parse Tree:")
+            print(tree.pretty())
         try:
             eval = interpreter.GoInterpreter().visit(tree)
             if eval is not None:
