@@ -1,6 +1,8 @@
-?program: statement+
+?program: statement+    //1 o inf statement
 
-?statement: declaration
+// The ?<rule> is important to shape the tree and reduce the 
+// number of children for single father if they is useful
+?statement: declaration 
           | bool_logic
           | if_stmt
           | for_stmnt
@@ -9,29 +11,29 @@
 block_statement: "{" statement* "}"
 
 ?bool_logic: relation
-          | "(" bool_logic ")"
-          | bool_logic "&&" bool_logic -> bool_and
-          | bool_logic "||" bool_logic -> bool_or
-          | "!" bool_logic -> bool_not
+           | "(" bool_logic ")"
+           | bool_logic "&&" bool_logic -> bool_and
+           | bool_logic "||" bool_logic -> bool_or
+           | "!" bool_logic -> bool_not
 
 ?relation: "(" relation ")"
-        | expression "<" expression -> less
-        | expression ">" expression -> great
-        | expression ">=" expression -> great_eq
-        | expression "<=" expression -> less_eq
-        | expression "==" expression -> equal
-        | expression "!=" expression -> not_equal
+         | expression "<" expression -> less
+         | expression ">" expression -> great
+         | expression ">=" expression -> great_eq
+         | expression "<=" expression -> less_eq
+         | expression "==" expression -> equal
+         | expression "!=" expression -> not_equal
 
 
-addition: expression "+" expression
-subtraction: expression "-" expression
-multiplication: term "*" term
-division: term "/" term
+addition        : expression "+" expression
+subtraction     : expression "-" expression
+multiplication  : term "*" term
+division        : term "/" term
 
 ?expression: "(" expression ")"
-          | term
-          | addition
-          | subtraction
+           | term
+           | addition
+           | subtraction
 
 term: "(" term ")"
     | factor
@@ -48,15 +50,15 @@ factor: NUMBER
 
 // Variable declarations and assignment
 ?declaration: "var" ident_list (DATA_TYPE ("=" expression_list)? | "=" expression_list) -> assignment
-           | ident_list ":=" expression_list -> short_assignment
-           | ident_list ":=" array_type "{" expression_list "}" -> array_assignment
+            | ident_list ":=" expression_list -> short_assignment
+            | ident_list ":=" array_type "{" expression_list "}" -> array_assignment
 
 // Data types
 DATA_TYPE: "int" | "string" | "bool"
 
-ident_list: IDENTIFIER ("," IDENTIFIER)*
-expression_list: expression ("," expression)*
-array_type: "[" NUMBER "]" DATA_TYPE
+ident_list      : IDENTIFIER ("," IDENTIFIER)*
+expression_list : expression ("," expression)*
+array_type      : "[" NUMBER "]" DATA_TYPE
 
 // If Statement
 if_stmt: "if" bool_logic block_statement ("else" (if_stmt|block_statement))?
@@ -66,10 +68,10 @@ for_stmnt: "for" bool_logic block_statement -> while_loop
          | "for" declaration ";" bool_logic ";" IDENTIFIER "++" block_statement -> for_loop
 
 // String type, enclosed by double quotes (ex. "ciao")
-STRING : /".*?(?<!\\)"/
+STRING: /".*?(?<!\\)"/
 
 // Import terminals from common library
-%import common.CNAME -> IDENTIFIER
+%import common.CNAME  -> IDENTIFIER
 %import common.NUMBER
 %import common.WS
 
