@@ -1,6 +1,6 @@
 import argparse
 
-from lark import Lark
+from lark import Lark,UnexpectedInput
 
 import transformer
 import interpreter
@@ -37,16 +37,29 @@ def main():
     else:
         start_repl(args.debug)
 
-    
 def start_repl(debug_mode):
     while True:
         try:
             s = input(">>> ")
             if s == "":
                 continue
-        except EOFError:
-            break
-        tree = parser.parse(s,on_error=error_handle.handler)
+        #except EOFError:
+            #break
+        
+        #try:
+            tree = parser.parse(s,on_error=error_handle.handler)
+        except UnexpectedInput as u:
+            exc_class = u.match_examples(parser.parse,{
+                error_handle.GoMissingValue: ["var x =",
+                                              "var x int =",
+                                              "x :=",
+                                              "var x",
+                                              "var x int"]
+            }, use_accepts=True)
+            if not exc_class:
+                raise
+            raise exc_class(u.get_context(s),u.line,u.column)
+
         if debug_mode:
             print("DEBUG: Parse Tree:")
             print(tree.pretty())

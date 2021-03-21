@@ -49,3 +49,11 @@ def handler(e):
     
     #Unhandled error
     return False
+
+class GoSyntaxError(SyntaxError):
+    def __str__(self):
+        context, line, column = self.args
+        return "%s at line %s, column %s.\n\n%s" %(self.label, line, column, context)
+
+class GoMissingValue(GoSyntaxError):
+    label = 'Missing Value'
