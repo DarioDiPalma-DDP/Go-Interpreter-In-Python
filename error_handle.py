@@ -8,6 +8,9 @@ class TypeDifferentError(Error):
     # Type different from specified
     pass
 
+class UnsupportedOperationType(Error):
+    pass
+
 def check_data_type(items):
     try:
         types = str(items[1].value)
@@ -34,4 +37,15 @@ def type_check(elements,type_to_check):
         for x in range(len(elements)):
                     if not isinstance(bool(elements[x]),bool):
                         raise TypeDifferentError
+
+def op_type(items):
+    if (type(items[0])!=type(items[1])):
+        raise UnsupportedOperationType
+
+def handler(e):
+    #SKIP TOKEN SEMICOLON
+    if e.token.type == "SEMICOLON":
+        return True
     
+    #Unhandled error
+    return False

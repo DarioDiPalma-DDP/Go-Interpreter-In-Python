@@ -2,7 +2,7 @@ from lark import Transformer
 
 from symbol_table import st, SymbolNotExistentException
 
-from error_handle import check_data_type, OutOfLenght, type_check, TypeDifferentError
+from error_handle import *
 
 class TreeTransformer(Transformer):
 
@@ -95,7 +95,7 @@ class TreeTransformer(Transformer):
             try:
                 return st.get(items[0].value)
             except SymbolNotExistentException:
-                    print("ERROR: Variable " + items[0].value + " does not exist.")
+                print("ERROR: Variable " + items[0].value + " does not exist.")
         elif items[0].type == 'STRING':
             return str(items[0].value.strip('"'))
 
@@ -111,16 +111,32 @@ class TreeTransformer(Transformer):
 
     # Arithmetic Operations
     def addition(self, items):
-        return items[0] + items[1]
+        try:
+            op_type(items)
+            return items[0] + items[1]
+        except UnsupportedOperationType:
+            print("The operation you enter isn't supported by type")
 
     def subtraction(self, items):
-        return items[0] - items[1]
+        try:
+            op_type(items)
+            return items[0] - items[1]
+        except UnsupportedOperationType:
+            print("The operation you enter isn't supported by type")
 
     def multiplication(self, items):
-        return items[0] * items[1]
+        try:
+            op_type(items)
+            return items[0] * items[1]
+        except UnsupportedOperationType:
+            print("The operation you enter isn't supported by type")
 
     def division(self, items):
-        return items[0] / items[1]
+        try:
+            op_type(items)
+            return items[0] / items[1]
+        except UnsupportedOperationType:
+            print("The operation you enter isn't supported by type")
 
     # Boolean logic
     def bool_and(self, items):

@@ -4,6 +4,7 @@ from lark import Lark
 
 import transformer
 import interpreter
+import error_handle
 
 parser = Lark.open("grammar.lark", parser="lalr", start="program")
 
@@ -20,7 +21,7 @@ def main():
     if args.script:
         with open(args.script) as f:
             read_data = f.read()
-            tree = parser.parse(read_data)
+            tree = parser.parse(read_data, on_error=error_handle.handler)
             if args.debug:
                 print("DEBUG: Parse Tree:")
                 print(tree.pretty())
@@ -45,7 +46,7 @@ def start_repl(debug_mode):
                 continue
         except EOFError:
             break
-        tree = parser.parse(s)
+        tree = parser.parse(s,on_error=error_handle.handler)
         if debug_mode:
             print("DEBUG: Parse Tree:")
             print(tree.pretty())
