@@ -41,9 +41,11 @@ Execution methods:
 1. Install Python<br/>
 2. pip install lark<br/>
 
-REPL mode:<br/>
-- python main.py<br/>
-Script mode:<br/>
-- python main.py -s (--script) script/file/location.go<br/>
-Debug mode (displays parse tree):<br/>
-- python main.py -d (--debug)
+REPL mode:
+> python main.py
+
+Script mode:
+> python main.py -s (--script) script/file/location.go
+
+Debug mode (displays parse tree):
+> python main.py -d (--debug)
