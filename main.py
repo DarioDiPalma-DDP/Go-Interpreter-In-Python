@@ -1,27 +1,37 @@
 import argparse
 
-from lark import Lark,UnexpectedInput
+from lark import Lark, UnexpectedInput
 
 import transformer
 import interpreter
-import error_handle
+import error_handler
 
 parser = Lark.open("grammar.lark", parser="lalr", start="program")
+
 
 def main():
     # Initialize the argument parser
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument("--script", "-s", help="set script file location")
-    arg_parser.add_argument("--debug", "-d", help="enable debug mode", action='store_true')
+    arg_parser.add_argument(
+        "--debug", "-d", help="enable debug mode", action="store_true"
+    )
 
     # Read arguments from the command line
     args = arg_parser.parse_args()
 
-    # Check for --width
     if args.script:
         with open(args.script) as f:
             read_data = f.read()
-            tree = parser.parse(read_data, on_error=error_handle.handler)
+            try:
+                tree = parse(read_data)
+            except error_handler.MissingValue as e:
+                print(e)
+                exit()
+            except error_handler.UnmatchedParenthesis as e:
+                print(e)
+                exit()
+
             if args.debug:
                 print("DEBUG: Parse Tree:")
                 print(tree.pretty())
@@ -37,32 +47,60 @@ def main():
     else:
         start_repl(args.debug)
 
+
+def parse(s):
+    try:
+        tree = parser.parse(s)
+    except UnexpectedInput as u:
+        exc_class = u.match_examples(
+            parser.parse,
+            {
+                error_handler.MissingValue: [
+                    "var x =",
+                    "var x int =",
+                    "var x string =",
+                    "x :=",
+                ],
+                error_handler.UnmatchedParenthesis: [
+                    "var x = (a+b",
+                    "var x = a+b)",
+                    "var x = ((a+b)",
+                    "var x = (a+b))",
+                    "Printf((a)",
+                    "Printf(a))",
+                ],
+            },
+            use_accepts=True,
+        )
+        if not exc_class:
+            raise
+        raise exc_class(u.get_context(s), u.line, u.column)
+    else:
+        return tree
+
+
 def start_repl(debug_mode):
     while True:
         try:
             s = input(">>> ")
             if s == "":
                 continue
-        #except EOFError:
-            #break
-        
-        #try:
-            tree = parser.parse(s,on_error=error_handle.handler)
-        except UnexpectedInput as u:
-            exc_class = u.match_examples(parser.parse,{
-                error_handle.GoMissingValue: ["var x =",
-                                              "var x int =",
-                                              "x :=",
-                                              "var x",
-                                              "var x int"]
-            }, use_accepts=True)
-            if not exc_class:
-                raise
-            raise exc_class(u.get_context(s),u.line,u.column)
+        except EOFError:
+            break
+
+        try:
+            tree = parse(s)
+        except error_handler.MissingValue as e:
+            print(e)
+            continue
+        except error_handler.UnmatchedParenthesis as e:
+            print(e)
+            continue
 
         if debug_mode:
             print("DEBUG: Parse Tree:")
             print(tree.pretty())
+
         try:
             eval = interpreter.GoInterpreter().visit(tree)
             if eval is not None:

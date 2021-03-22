@@ -2,7 +2,7 @@ from lark import Transformer
 
 from symbol_table import st, SymbolNotExistentException
 
-from error_handle import *
+from error_handler import *
 
 class TreeTransformer(Transformer):
 
