@@ -1,3 +1,18 @@
+# Syntax Errors
+class GoSyntaxError(SyntaxError):
+    def __str__(self):
+        context, line, column = self.args
+        return "%s at line %s, column %s.\n\n%s" % (self.label, line, column, context)
+
+
+class MissingValue(GoSyntaxError):
+    label = "Missing Value"
+
+
+class UnmatchedParenthesis(GoSyntaxError):
+    label = "Unmatched Parenthesis"
+
+
 # Semantic Errors
 class GoSemanticError(Exception):
     pass
@@ -15,21 +30,6 @@ class TypeDifferentError(GoSemanticError):
 
 class UnsupportedOperationType(GoSemanticError):
     pass
-
-
-# Syntax Errors
-class GoSyntaxError(SyntaxError):
-    def __str__(self):
-        context, line, column = self.args
-        return "%s at line %s, column %s.\n\n%s" % (self.label, line, column, context)
-
-
-class MissingValue(GoSyntaxError):
-    label = "Missing Value"
-
-
-class UnmatchedParenthesis(GoSyntaxError):
-    label = "Unmatched Parenthesis"
 
 
 def check_data_type(items):
