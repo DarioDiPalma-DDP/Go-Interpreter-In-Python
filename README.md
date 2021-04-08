@@ -75,3 +75,5 @@ Script mode:
 Debug mode (displays parse tree):
 > python main.py -d (--debug)<br/>
 Supported both of REPL and Script mode
+
+#### Or using the executable file go.exe from PowerShell/CMD - release v0.1-alpha
