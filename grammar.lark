@@ -68,7 +68,7 @@ for_stmnt: "for" bool_logic block_statement -> while_loop
          | "for" declaration ";" bool_logic ";" IDENTIFIER "++" block_statement -> for_loop
 
 // String type, enclosed by double quotes (ex. "ciao")
-STRING: /".*?(?<!\\)"/
+STRING: /".*"/
 
 // Import terminals from common library
 %import common.CNAME  -> IDENTIFIER
