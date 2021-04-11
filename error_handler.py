@@ -4,10 +4,8 @@ class GoSyntaxError(SyntaxError):
         context, line, column = self.args
         return "%s at line %s, column %s.\n\n%s" % (self.label, line, column, context)
 
-
 class MissingValue(GoSyntaxError):
     label = "Missing Value"
-
 
 class UnmatchedParenthesis(GoSyntaxError):
     label = "Unmatched Parenthesis"
@@ -17,20 +15,16 @@ class UnmatchedParenthesis(GoSyntaxError):
 class GoSemanticError(Exception):
     pass
 
-
 class OutOfLenght(GoSemanticError):
     # Array lenght different from defined number of elements
     pass
-
 
 class TypeDifferentError(GoSemanticError):
     # Type different from specified
     pass
 
-
 class UnsupportedOperationType(GoSemanticError):
     pass
-
 
 def check_data_type(items):
     try:
@@ -48,7 +42,6 @@ def check_data_type(items):
         print("The elements you enter doesn't is conform with the type specificed")
         return False
 
-
 def type_check(elements, type_to_check):
     if type_to_check != bool:
         for x in range(len(elements)):
@@ -58,7 +51,6 @@ def type_check(elements, type_to_check):
         for x in range(len(elements)):
             if not isinstance(bool(elements[x]), bool):
                 raise TypeDifferentError
-
 
 def op_type(items):
     if type(items[0]) != type(items[1]):

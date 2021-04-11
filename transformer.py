@@ -4,6 +4,7 @@ from symbol_table import st, SymbolNotExistentException
 
 from error_handler import *
 
+# Transfomer visits a sub-tree bottom-up and run appropriate methods
 class TreeTransformer(Transformer):
 
     # Variable assignment
@@ -33,6 +34,7 @@ class TreeTransformer(Transformer):
         else:
             print("There was an Error in your declaration")
 
+
     # x := 2
     def short_assignment(self, items):
         ident = items[0]
@@ -46,7 +48,7 @@ class TreeTransformer(Transformer):
                 for i in range(len(ident.children)):
                     st.set(ident.children[i], items[1].children[i])
 
-
+    # x := [4]int{0,1,2,3}
     def array_assignment(self, items):
         try:
             length = items[1].children[0].value
@@ -65,6 +67,11 @@ class TreeTransformer(Transformer):
             print("Lenght of array don't coincide with the number of elements")
         except TypeDifferentError:
             print("The elements you enter doesn't is conform with the type specificed")
+
+    # x[1]
+    def index(self, items):
+        array = st.get(items[0].value)
+        return array[items[1]]
 
     # Relational operators
     def less(self, items):
@@ -85,6 +92,7 @@ class TreeTransformer(Transformer):
     def not_equal(self, items):
         return items[0] != items[1]
 
+
     # Operands translation
     def factor(self, items):
         if items[0].type == 'NUMBER':
@@ -99,15 +107,13 @@ class TreeTransformer(Transformer):
         elif items[0].type == 'STRING':
             return str(items[0].value.strip('"'))
 
-    def index(self, items):
-        array = st.get(items[0].value)
-        return array[items[1]]
     
     def term(self, items):
         return items[0]
 
     def expression(self, items):
         return items[0]
+
 
     # Arithmetic Operations
     def addition(self, items):
@@ -138,6 +144,7 @@ class TreeTransformer(Transformer):
         except UnsupportedOperationType:
             print("The operation you enter isn't supported by type")
 
+
     # Boolean logic
     def bool_and(self, items):
         return items[0] and items[1]
@@ -150,6 +157,7 @@ class TreeTransformer(Transformer):
 
     def bool_logic(self, items):
         return items[0]
+
 
     # Keyboard input
     def scanf(self, items):

@@ -8,7 +8,17 @@
           | for_stmnt
           | "Printf" "(" (expression | bool_logic) ")" -> printf
 
-block_statement: "{" statement* "}"
+// Variable declarations and assignment
+?declaration: "var" ident_list (DATA_TYPE "=" expression_list | "=" expression_list) -> assignment // Typed or not 
+            | ident_list ":=" expression_list -> short_assignment // x := 2 || x,y,z := 2,3,4
+            | ident_list ":=" array_type "{" expression_list "}" -> array_assignment // x := [4]int{1,2,3,4}
+
+// Data types
+DATA_TYPE: "int" | "string" | "bool"
+
+ident_list      : IDENTIFIER ("," IDENTIFIER)*
+expression_list : expression ("," expression)*
+array_type      : "[" NUMBER "]" DATA_TYPE
 
 ?bool_logic: relation
            | "(" bool_logic ")"
@@ -23,12 +33,6 @@ block_statement: "{" statement* "}"
          | expression "<=" expression -> less_eq
          | expression "==" expression -> equal
          | expression "!=" expression -> not_equal
-
-
-addition        : expression "+" expression
-subtraction     : expression "-" expression
-multiplication  : term "*" term
-division        : term "/" term
 
 ?expression: "(" expression ")"
            | term
@@ -48,17 +52,12 @@ factor: NUMBER
       | IDENTIFIER "[" expression "]" -> index
       | "Scanf" "(" expression ")" -> scanf
 
-// Variable declarations and assignment
-?declaration: "var" ident_list (DATA_TYPE ("=" expression_list)? | "=" expression_list) -> assignment
-            | ident_list ":=" expression_list -> short_assignment
-            | ident_list ":=" array_type "{" expression_list "}" -> array_assignment
+addition        : expression "+" expression
+subtraction     : expression "-" expression
+multiplication  : term "*" term
+division        : term "/" term
 
-// Data types
-DATA_TYPE: "int" | "string" | "bool"
-
-ident_list      : IDENTIFIER ("," IDENTIFIER)*
-expression_list : expression ("," expression)*
-array_type      : "[" NUMBER "]" DATA_TYPE
+block_statement: "{" statement+ "}"
 
 // If Statement
 if_stmt: "if" bool_logic block_statement ("else" (if_stmt|block_statement))?

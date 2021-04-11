@@ -92,7 +92,7 @@ def start_repl(debug_mode):
         try:
             tree = parse(s)
         except lark.exceptions.UnexpectedToken:
-            print("Operation Lexically wrong or not yet supported")
+            print("Wrong Operation or not yet supported try again")
             continue
         except error_handler.MissingValue as e:
             print(e)

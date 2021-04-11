@@ -8,8 +8,10 @@ trans = transformer.TreeTransformer()
 
 # Interpreter is used to visit the root tree top-down
 class GoInterpreter(Interpreter):
+    
     def program(self, tree):
         return self.visit_children(tree)
+
 
     def if_stmt(self, tree):
         trans_cond = trans.transform(tree.children[0])
@@ -57,6 +59,7 @@ class GoInterpreter(Interpreter):
             st.set(ident, cur_value+1)
         return evs
 
+
     def bool_logic(self, tree):
         return trans.transform(tree)
 
@@ -69,8 +72,10 @@ class GoInterpreter(Interpreter):
     def bool_not(self, tree):
         return trans.transform(tree)
 
+
     def block_statement(self, tree):
         self.visit_children(tree)
+
 
     def assignment(self, tree):
         return trans.transform(tree)
@@ -80,6 +85,7 @@ class GoInterpreter(Interpreter):
 
     def array_assignment(self, tree):
         return trans.transform(tree)
+
 
     def expression(self, tree):
         return trans.transform(tree)
