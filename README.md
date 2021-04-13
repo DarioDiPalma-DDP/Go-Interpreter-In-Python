@@ -2,8 +2,9 @@
 A Go Interpreter written in Python using Lark a modern parsing library for Python, with @markserver<br/>
 
 Golang Grammar: https://golang.org/ref/spec<br/>
-Lark: https://lark-parser.readthedocs.io/en/latest/index.html#<br/>
+Lark: https://github.com/lark-parser/lark<br/>
 
+If you want extend the project or reuse it, citate this project repository
 #
 
 ### Supported restriction:
